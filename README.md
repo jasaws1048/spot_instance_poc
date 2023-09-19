@@ -9,7 +9,7 @@ eksctl create cluster --version=1.25 --name=spotcluster-eksctl --node-private-ne
 - Create EKS Managed Node group
 
 ```
-kubectl apply -f spot_nodegroups.yaml`
+kubectl apply -f spot_nodegroups.yaml
 ```
 
 - Install AWS Node Termination Handler 
@@ -57,9 +57,12 @@ Save the file and then deploy the Cluster Autoscaler:
 kubectl apply -f cluster-autoscaler-autodiscover.yaml
 ```
 
+Next, add the cluster-autoscaler.kubernetes.io/safe-to-evictannotation to the deployment with the following command:
+
 ```kubectl -n kube-system annotate deployment.apps/cluster-autoscaler cluster-autoscaler.kubernetes.io/safe-to-evict="false"
 ```
 
+Update the image for cluster-autoscaler
 
 ```kubectl -n kube-system set image deployment.apps/cluster-autoscaler cluster-autoscaler=registry.k8s.io/autoscaling/cluster-autoscaler:v1.25.3
 ```
@@ -140,39 +143,35 @@ kubectl apply -f web-app.yaml
 
 Confirm that both deployments are running:
 
+Status Update for the app web-stateless
 ```
-kubectl get deployment/web-stateless
-```
-```kubectl get deployment/web-stateful
-```
+kubectl get deployment/web-stateless```
+
+Status Update for the app web-stateful
+
+```kubectl get deployment/web-stateful```
 
 Now, scale out the stateless application:
 
-```kubectl scale --replicas=30 deployment/web-stateless
-```
+```kubectl scale --replicas=30 deployment/web-stateless```
 
 Check to see that there are pending pods. Wait approximately 5 minutes, then check again to confirm the pending pods have been scheduled:
 
-```kubectl get pods
-```
+```kubectl get pods```
 
 - Clean-Up
 
 Remove the AWS Node Termination Handler:
 
-```kubectl delete daemonset aws-node-termination-handler -n kube-system
-```
+```kubectl delete daemonset aws-node-termination-handler -n kube-system```
 
 Remove the two Spot node groups (EC2 Auto Scaling group) that you deployed in the tutorial.
 
-```eksctl delete nodegroup ng-4vcpu-16gb-spot --cluster spotcluster-eksctl
-```
-```eksctl delete nodegroup ng-8vcpu-32gb-spot --cluster spotcluster-eksctl
-```
+```eksctl delete nodegroup ng-4vcpu-16gb-spot --cluster spotcluster-eksctl```
+```eksctl delete nodegroup ng-8vcpu-32gb-spot --cluster spotcluster-eksctl```
 
 If you used a new cluster and not your existing cluster, delete the EKS cluster.
 
 eksctl confirms the deletion of the cluster’s CloudFormation stack immediately but the deletion could take up to 15 minutes. You can optionally track it in the CloudFormation Console.
 
-```eksctl delete cluster --name spotcluster-eksctl
-```
+```eksctl delete cluster --name spotcluster-eksctl```
