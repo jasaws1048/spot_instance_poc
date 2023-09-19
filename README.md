@@ -14,7 +14,15 @@ kubectl apply -f spot_nodegroups.yaml
 
 - Install AWS Node Termination Handler 
 
-https://artifacthub.io/packages/helm/aws/aws-node-termination-handler
+```
+helm repo add eks https://aws.github.io/eks-charts/
+```
+
+After you've installed the repo you can install the chart, the following command will install the chart with the release name aws-node-termination-handler and the default configuration to the kube-system namespace.
+
+```
+helm upgrade --install --namespace kube-system aws-node-termination-handler eks/aws-node-termination-handler
+```
 
 - Install the Cluster Autoscaler
 
@@ -171,7 +179,7 @@ kubectl get pods
 Remove the AWS Node Termination Handler:
 
 ```
-kubectl delete daemonset aws-node-termination-handler -n kube-system
+helm delete --namespace kube-system aws-node-termination-handler
 ```
 
 Remove the two Spot node groups (EC2 Auto Scaling group) that you deployed in the tutorial.
