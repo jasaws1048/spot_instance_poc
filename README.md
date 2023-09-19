@@ -9,7 +9,7 @@ eksctl create cluster --version=1.25 --name=spotcluster-eksctl --node-private-ne
 - Create EKS Managed Node group
 
 ```
-kubectl apply -f spot_nodegroups.yaml
+eksctl create nodegroup -f spot_nodegroups.yml
 ```
 
 - Install AWS Node Termination Handler 
